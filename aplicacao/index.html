@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora IMC</title>
+</head>
+<body>
+    <form action="/app.php" method="POST">
+        <div>
+            <label for="nome">Nome:</label>
+            <input type="text" name="nome" id="nome">
+        </div>
+        <div>
+            <label for="data_nascimento">Data Nascimento:</label>
+            <input type="date" name="data_nascimento" id="data_nascimento">            
+        </div> 
+        <div>
+            <label for="peso">Peso (KG):</label>
+            <input type="number" name="peso" id="peso" step="0.01">            
+        </div> 
+        <div>
+            <label for="altura">Altura (M):</label>
+            <input type="number" name="altura" id="altura" step="0.01">            
+        </div>  
+        <div>
+            <label for="">Selecione o sexo:</label>
+            <select name="sexo" id="sexo">
+                <option disabled>Selecione</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Femino">Femino</option>
+            </select>
+        </div>  
+        <div>
+            <input type="submit" value="Calcular">
+        </div>            
+    </form>
+</body>
+</html>

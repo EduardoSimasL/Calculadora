@@ -1,0 +1,5 @@
+Message: Mensagem 2
+File: E:\metricas\Aula0104_logs_metricas\aplicacao\log_exception.php
+Line:11
+ErrorCode: 1
+Stack Strace: #0 {main}
