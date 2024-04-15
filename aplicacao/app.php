@@ -5,41 +5,51 @@ require_once __DIR__ . '/src/CalculadoraImc.php';
 require_once __DIR__ . '/src/SexoEnum.php';
 require_once __DIR__ . '/src/ClassificacaoImcEnum.php';
 
+try {
+    if (empty($_POST['nome']) || empty($_POST['peso']) || empty($_POST['altura']) || empty($_POST['sexo']) || empty($_POST['data_nascimento'])) {
+        throw new DadosUsuarioInvalidosException();
+    }
 
-$usuario = new Usuario( nome: $_POST['nome'], 
-                        peso: $_POST['peso'], 
-                        altura: $_POST['altura'],
-                        sexo: SexoEnum::from($_POST['sexo']),
-                        dataNascimento: new DateTimeImmutable($_POST['data_nascimento']));
+    $usuario = new Usuario(
+        nome: $_POST['nome'],
+        peso: $_POST['peso'],
+        altura: $_POST['altura'],
+        sexo: SexoEnum::from($_POST['sexo']),
+        dataNascimento: new DateTimeImmutable($_POST['data_nascimento'])
+    );
 
+    $calculadora = new CalculadoraImc($usuario);
+    $resultado = ClassificacaoImcEnum::classifica($calculadora->calcular());
 
-$calculadora = new CalculadoraImc($usuario);
-$resultado = ClassificacaoImcEnum::classifica($calculadora->calcular());
+    $template = file_get_contents(__DIR__ . '/src/templates/resultado.html');
 
-// 1) ler o template de resposta
-$template = file_get_contents(__DIR__ . '/src/templates/resultado.html');
+    $template = str_replace(
+        [
+            '{{USUARIO}}',
+            '{{PESO}}',
+            '{{ALTURA}}',
+            '{{IDADE}}',
+            '{{SEXO}}',
+            '{{ICM}}',
+            '{{CLASSIFICACAO}}'
+        ],
+        [
+            $usuario->getNome(),
+            $usuario->getPeso(),
+            $usuario->getAltura(),
+            $usuario->getIdadeAtual(),
+            $usuario->getSexo()->value,
+            $calculadora->calcular(),
+            $resultado
+        ],
+        $template
+    );
 
-// 2) trocar cada valor estatico pelo valor do script
-$template = str_replace(
-    [
-        '{{USUARIO}}',
-        '{{PESO}}',
-        '{{ALTURA}}',
-        '{{IDADE}}',
-        '{{SEXO}}',
-        '{{ICM}}',
-        '{{CLASSIFICACAO}}'
-    ],
-    [
-        $usuario->getNome(),
-        $usuario->getPeso(),
-        $usuario->getAltura(),
-        $usuario->getIdadeAtual(),
-        $usuario->getSexo()->value,
-        $calculadora->calcular(),
-        $resultado
-    ],
-    $template);
-
-
-echo $template;
+    echo $template;
+} catch (DadosUsuarioInvalidosException $e) {
+    echo 'Erro: Dados do usuário inválidos.';
+} catch (Exception $e) {
+    echo 'Erro inesperado: ' . $e->getMessage();
+    // Logar o erro
+  error_log('Erro inesperado: ' . $e->getMessage());
+}
