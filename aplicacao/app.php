@@ -48,8 +48,10 @@ try {
     echo $template;
 } catch (DadosUsuarioInvalidosException $e) {
     echo 'Erro: Dados do usuário inválidos.';
+    //Logar
+    error_log('Erro: Dados do usuário inválidos.');
 } catch (Exception $e) {
     echo 'Erro inesperado: ' . $e->getMessage();
-    // Logar o erro
-  error_log('Erro inesperado: ' . $e->getMessage());
+    //Logar
+    error_log('Erro inesperado: ' . $e->getMessage());
 }
